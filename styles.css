@@ -56,8 +56,8 @@ button, select {
   --color-accent-dim:   #2D6E5E14;
   --color-error:        #B3261E;
   --color-error-dim:    #B3261E12;
-  --color-selected:     #2D6E5E1f;
-  --color-peer:         #1F24210d;
+ --color-selected:     #F5E1A4;
+--color-peer:         #FBF0D9;
 
   /* Type */
   --font-display: 'Source Serif 4', Georgia, serif;
