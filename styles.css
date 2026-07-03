@@ -1,0 +1,486 @@
+/* ==========================================================================
+   SUDOKU — STYLES
+   --------------------------------------------------------------------------
+   1.  Reset & Base
+   2.  Design Tokens (color, type, spacing)
+   3.  Layout — Page Shell
+   4.  Masthead
+   5.  Status Row
+   6.  Board
+   7.  Cell States (given / user / selected / peer / error / solved)
+   8.  Numpad
+   9.  Toolbar & Buttons
+   10. Helper Text & Colophon
+   11. Animations
+   12. Responsive
+   13. Accessibility (focus, reduced motion)
+   ========================================================================== */
+
+
+/* 1. Reset & Base
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, select {
+  font-family: inherit;
+}
+
+
+/* 2. Design Tokens
+   ========================================================================== */
+:root {
+
+  /* Color */
+  --color-paper:        #FBF8F2;
+  --color-paper-dim:    #F2EDE3;
+  --color-ink:          #1F2421;
+  --color-ink-soft:     #5B5F5A;
+  --color-rule:         #D4CFC4;
+  --color-rule-strong:  #B9B2A3;
+  --color-given:        #C2410C;   /* burnt orange — fixed/given digits */
+  --color-given-dim:    #C2410C1a;
+  --color-user:         #1F2421;   /* near-black — user-entered digits */
+  --color-accent:       #2D6E5E;   /* deep teal — solve / generate actions */
+  --color-accent-dim:   #2D6E5E14;
+  --color-error:        #B3261E;
+  --color-error-dim:    #B3261E12;
+  --color-selected:     #2D6E5E1f;
+  --color-peer:         #1F24210d;
+
+  /* Type */
+  --font-display: 'Source Serif 4', Georgia, serif;
+  --font-body:    'Source Serif 4', Georgia, serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  /* Board sizing */
+  --board-size: min(86vw, 460px);
+  --cell-size: calc(var(--board-size) / 9);
+}
+
+
+/* 3. Layout — Page Shell
+   ========================================================================== */
+.page {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* 4. Masthead
+   ========================================================================== */
+.masthead {
+  text-align: center;
+  margin-bottom: var(--space-7);
+  max-width: 460px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-given);
+  margin: 0 0 var(--space-3);
+  font-weight: 500;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.75rem, 8vw, 3.75rem);
+  line-height: 1;
+  margin: 0 0 var(--space-4);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--color-ink-soft);
+  margin: 0;
+}
+
+
+/* 5. Status Row
+   ========================================================================== */
+.puzzle-block {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status-row {
+  width: var(--board-size);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-3);
+  padding: 0 var(--space-1);
+}
+
+.status-left, .status-right {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.status-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+.status-value {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.status-value--success { color: var(--color-accent); }
+.status-value--error { color: var(--color-error); }
+
+
+/* 6. Board
+   ========================================================================== */
+.board-wrap {
+  position: relative;
+  margin-bottom: var(--space-5);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(9, var(--cell-size));
+  grid-template-rows: repeat(9, var(--cell-size));
+  background: var(--color-ink);
+  border: 2px solid var(--color-ink);
+}
+
+.cell {
+  background: var(--color-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: calc(var(--cell-size) * 0.46);
+  font-weight: 500;
+  color: var(--color-user);
+  cursor: pointer;
+  position: relative;
+  border: 0.5px solid var(--color-rule);
+  user-select: none;
+  transition: background-color 0.12s ease;
+}
+
+/* Thick borders every 3 cells to mark the 3x3 boxes */
+.cell[data-col="0"] { border-left: 2px solid var(--color-ink); }
+.cell[data-col="2"], .cell[data-col="5"] { border-right: 1.5px solid var(--color-ink); }
+.cell[data-col="8"] { border-right: 2px solid var(--color-ink); }
+.cell[data-row="0"] { border-top: 2px solid var(--color-ink); }
+.cell[data-row="2"], .cell[data-row="5"] { border-bottom: 1.5px solid var(--color-ink); }
+.cell[data-row="8"] { border-bottom: 2px solid var(--color-ink); }
+
+
+/* 7. Cell States
+   ========================================================================== */
+.cell--given {
+  color: var(--color-given);
+  font-weight: 600;
+  cursor: default;
+}
+
+.cell--user {
+  color: var(--color-user);
+}
+
+.cell--selected {
+  background: var(--color-selected);
+}
+
+.cell--peer {
+  background: var(--color-peer);
+}
+
+.cell--error {
+  background: var(--color-error-dim);
+  color: var(--color-error);
+}
+
+.cell--solved {
+  color: var(--color-accent);
+}
+
+.cell--hint {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.cell:not(.cell--given):hover {
+  background: var(--color-paper-dim);
+}
+
+
+/* 8. Numpad
+   ========================================================================== */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: var(--space-2);
+  width: var(--board-size);
+  margin-bottom: var(--space-6);
+}
+
+.num-btn {
+  aspect-ratio: 1;
+  border: 1px solid var(--color-rule-strong);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.num-btn:hover {
+  background: var(--color-accent-dim);
+  border-color: var(--color-accent);
+}
+
+.num-btn--erase {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--color-ink-soft);
+}
+
+
+/* 9. Toolbar & Buttons
+   ========================================================================== */
+.toolbar {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.toolbar-group[hidden] {
+  display: none;
+}
+
+.toolbar-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  margin-right: var(--space-1);
+}
+
+.select-wrap select {
+  border: 1px solid var(--color-rule-strong);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 3px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 3px;
+  border: 1px solid var(--color-rule-strong);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease, transform 0.08s ease;
+}
+
+.btn:hover {
+  background: var(--color-paper-dim);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn--primary:hover {
+  background: #34403a;
+}
+
+.btn--accent {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-paper);
+}
+
+.btn--accent:hover {
+  background: #255a4d;
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-ink-soft);
+}
+
+.btn--ghost:hover {
+  background: var(--color-rule);
+  color: var(--color-ink);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* 10. Helper Text & Colophon
+   ========================================================================== */
+.hint-text {
+  font-size: 0.85rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+  max-width: 420px;
+  line-height: 1.5;
+  min-height: 2.6em;
+  margin: 0;
+}
+
+.colophon {
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-rule);
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+}
+
+.colophon p {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-ink-soft);
+  letter-spacing: 0.02em;
+}
+
+
+/* 11. Animations
+   ========================================================================== */
+@keyframes cellFillIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.cell--fill-anim {
+  animation: cellFillIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+
+.board--shake {
+  animation: shake 0.4s ease;
+}
+
+
+/* 12. Responsive
+   ========================================================================== */
+@media (max-width: 480px) {
+  .page {
+    padding: var(--space-6) var(--space-4) var(--space-7);
+  }
+
+  .toolbar-group {
+    width: 100%;
+  }
+
+  .toolbar-group .btn,
+  .toolbar-group .select-wrap,
+  .toolbar-group select {
+    flex: 1 1 auto;
+  }
+}
+
+
+/* 13. Accessibility
+   ========================================================================== */
+.cell:focus-visible,
+.num-btn:focus-visible,
+.btn:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell--fill-anim {
+    animation: none;
+  }
+  .board--shake {
+    animation: none;
+  }
+  .btn {
+    transition: none;
+  }
+}
