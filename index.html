@@ -88,7 +88,18 @@
       <p class="hint-text" id="helperText">Pick a difficulty and generate a puzzle, or click any empty cell to start entering your own.</p>
 
     </main>
+<section class="about-block">
+  <h2 class="about-heading">What is Sudoku?</h2>
+  <p class="about-text">Sudoku is a logic-based number puzzle played on a 9&times;9 grid, divided into nine 3&times;3 boxes. The goal is to fill every row, column, and box with the digits 1 through 9, with no digit repeating in any row, column, or box. No math is involved &mdash; it's pure deduction, working out which numbers can and can't go in each empty cell based on what's already placed around it.</p>
 
+  <h2 class="about-heading">How this solver works</h2>
+  <p class="about-text">This tool uses a backtracking algorithm paired with a minimum remaining values (MRV) heuristic: instead of guessing cells in order, it always fills in whichever empty cell has the fewest possible candidates left, which prunes the search dramatically and solves most puzzles instantly. You can generate a fresh puzzle at four difficulty levels, play it by hand with the on-screen numpad, or switch to entry mode and type in your own puzzle from a newspaper or book for the solver to crack.</p>
+
+  <h2 class="about-heading">Frequently asked questions</h2>
+  <p class="about-text"><strong>Is this Sudoku solver free?</strong> Yes, it's completely free to use, with no sign-up required.</p>
+  <p class="about-text"><strong>Can I enter my own puzzle?</strong> Yes &mdash; use the "My puzzle" button to switch to entry mode, type in the numbers you already have, then click "Use this puzzle" to lock it in and start solving or playing.</p>
+  <p class="about-text"><strong>What if my puzzle has more than one solution?</strong> The solver will let you know if the puzzle you entered doesn't have a single unique solution, since a valid Sudoku puzzle should only ever have one.</p>
+</section>
     <footer class="colophon">
       <p>Built by Pradheep Duraisami &mdash; a logic-puzzle tool exploring print-inspired grid design.</p>
     </footer>
