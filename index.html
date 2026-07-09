@@ -21,13 +21,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
  <link rel="icon" href="icons/icon-192.png" type="image/png" />
 </head>
- <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
-</script>
+ 
 <body>
 
   <div class="page">
@@ -118,5 +112,12 @@
   </div>
 
   <script src="script.js"></script>
+ <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
 </body>
 </html>
